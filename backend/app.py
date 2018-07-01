@@ -1,11 +1,49 @@
-from chalice import Chalice
+from chalice import Chalice, Response
+import requests
+
 
 app = Chalice(app_name='backend')
+app.debug = True
+
+bysykkel_api = "https://oslobysykkel.no/api/v1/"
+bysykkel_key = "ad9164a3bb6fea78ff68574ac03e54cb"
+bysykkel_header = {"Client-Identifier": bysykkel_key}
 
 
 @app.route('/')
 def index():
     return {'hello': 'world'}
+
+
+@app.route("/bikes/{stationId}")
+def stationIdInfo(stationId):
+    content = requests.get(bysykkel_api + "stations", headers=bysykkel_header)
+    stations = content.json()["stations"]
+    station = None
+    bikes = 0
+    locks = 0
+    for s in stations:
+        if s["id"] == int(stationId):
+            station = s
+            break
+    if not station:
+        return Response(body={"msg": "Not found"}, status_code=404)
+
+    content = requests.get(
+        bysykkel_api + "stations/availability", headers=bysykkel_header)
+    stations = content.json()["stations"]
+    for s in stations:
+        if s["id"] == int(stationId):
+            bikes = s["availability"]["bikes"]
+            locks = s["availability"]["locks"]
+            break
+
+    return {"name": station["title"],
+            "subtitle": station["subtitle"],
+            "nLocks": station["number_of_locks"],
+            "availableBikes": bikes,
+            "availableLocks": locks,
+            }
 
 
 # The view function above will return {"hello": "world"}
