@@ -1,9 +1,24 @@
 import React, { Component } from "react"
+import Card from "./components/Card"
+import BikeInfo from "./components/BikeInfo"
+import { colors } from "./globals"
 
 class App extends Component {
   render() {
-    return <div />
+    return (
+      <div style={style}>
+        <Card color={colors.blue}>
+          <BikeInfo title="Elisenbergveien" count={10} />
+        </Card>
+      </div>
+    )
   }
+}
+
+const style = {
+  display: "flex",
+  justifyContent: "space-around",
+  margin: "2em",
 }
 
 export default App
