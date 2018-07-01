@@ -1,26 +1,56 @@
 import React, { Component } from "react"
 import PropTypes from "prop-types"
-import { titleStyle, matIcon } from "../globals"
+import { titleStyle, matIcon, centered } from "../globals"
 
 class BikeInfo extends Component {
+  state = {
+    isLoading: true,
+    stationName: "",
+    count: 0,
+  }
+
+  async loadData() {
+    console.log("Loading data")
+  }
+
+  componentDidMount() {
+    this.loadData()
+  }
+
+  getComponent = () => {
+    switch (this.state.isLoading) {
+      case true:
+        return (
+          <div style={centered}>
+            <div className="lds-ripple">
+              <div />
+              <div />
+            </div>
+          </div>
+        )
+
+      default:
+        return (
+          <div style={style}>
+            <div style={titleStyle}>
+              <i style={matIcon} className="material-icons">
+                directions_bike
+              </i>
+              {this.state.stationName}
+            </div>
+            <div> {this.state.count} sykler igjen</div>
+          </div>
+        )
+    }
+  }
+
   render() {
-    return (
-      <div style={style}>
-        <div style={titleStyle}>
-          <i style={matIcon} className="material-icons">
-            directions_bike
-          </i>
-          {this.props.title}
-        </div>
-        <div> {this.props.count} sykler igjen</div>
-      </div>
-    )
+    return this.getComponent()
   }
 }
 
 BikeInfo.propTypes = {
-  title: PropTypes.string.isRequired,
-  count: PropTypes.number.isRequired,
+  stationId: PropTypes.string.isRequired,
 }
 
 const style = {

@@ -17,3 +17,10 @@ export const matIcon = {
   fontSize: "1.5em",
   marginRight: "0.3em",
 }
+
+export const centered = {
+  display: "flex",
+  height: "100%",
+  justifyContent: "center",
+  alignItems: "center",
+}

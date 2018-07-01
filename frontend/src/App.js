@@ -8,7 +8,7 @@ class App extends Component {
     return (
       <div style={style}>
         <Card color={colors.blue}>
-          <BikeInfo title="Elisenbergveien" count={10} />
+          <BikeInfo stationId="264" />
         </Card>
       </div>
     )
