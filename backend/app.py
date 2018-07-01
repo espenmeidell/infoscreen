@@ -1,5 +1,5 @@
 from chalice import Chalice, Response
-import requests
+from botocore.vendored import requests
 
 
 app = Chalice(app_name='backend')
