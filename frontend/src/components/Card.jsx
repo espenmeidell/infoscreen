@@ -9,7 +9,6 @@ const Card = ({ color, children }) => {
 const style = {
   padding: "2em",
   width: "300px",
-  height: "200px",
   color: colors.foreground,
 }
 

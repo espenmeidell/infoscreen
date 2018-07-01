@@ -15,7 +15,7 @@ def index():
     return {'hello': 'world'}
 
 
-@app.route("/bikes/{stationId}")
+@app.route("/bikes/{stationId}", cors=True)
 def stationIdInfo(stationId):
     content = requests.get(bysykkel_api + "stations", headers=bysykkel_header)
     stations = content.json()["stations"]

@@ -10,7 +10,16 @@ class BikeInfo extends Component {
   }
 
   async loadData() {
-    console.log("Loading data")
+    const ctx = await fetch(
+      "https://l6k9n76oz1.execute-api.eu-central-1.amazonaws.com/api/bikes/" +
+        this.props.stationId,
+    )
+    const json = await ctx.json()
+    this.setState({
+      isLoading: false,
+      stationName: json.name,
+      count: json.availableBikes,
+    })
   }
 
   componentDidMount() {
