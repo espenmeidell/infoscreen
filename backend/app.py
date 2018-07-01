@@ -1,5 +1,6 @@
 from chalice import Chalice, Response
 from botocore.vendored import requests
+import datetime
 
 
 app = Chalice(app_name='backend')
@@ -9,6 +10,8 @@ bysykkel_api = "https://oslobysykkel.no/api/v1/"
 bysykkel_key = "ad9164a3bb6fea78ff68574ac03e54cb"
 bysykkel_header = {"Client-Identifier": bysykkel_key}
 
+entur_header = {"ET-Client-Name": "espens-infoskjerm"}
+
 
 @app.route('/')
 def index():
@@ -16,7 +19,7 @@ def index():
 
 
 @app.route("/bikes/{stationId}", cors=True)
-def stationIdInfo(stationId):
+def station_id_info(stationId):
     content = requests.get(bysykkel_api + "stations", headers=bysykkel_header)
     stations = content.json()["stations"]
     station = None
@@ -46,22 +49,47 @@ def stationIdInfo(stationId):
             }
 
 
-# The view function above will return {"hello": "world"}
-# whenever you make an HTTP GET request to '/'.
-#
-# Here are a few more examples:
-#
-# @app.route('/hello/{name}')
-# def hello_name(name):
-#    # '/hello/james' -> {"hello": "james"}
-#    return {'hello': name}
-#
-# @app.route('/users', methods=['POST'])
-# def create_user():
-#     # This is the JSON body the user sent in their POST request.
-#     user_as_json = app.current_request.json_body
-#     # We'll echo the json body back to the user in a 'user' key.
-#     return {'user': user_as_json}
-#
-# See the README documentation for more examples.
-#
+@app.route("/ruter/stopp/{stopId}", cors=True)
+def get_departures_from_stop(stopId):
+    now = datetime.datetime.now().isoformat()
+    print(now)
+    query = '''
+{
+  stopPlace(id: "''' + stopId + '''") {
+    id
+    name
+    estimatedCalls(startTime:"''' + now + '''" timeRange: 72100, numberOfDepartures: 10) {     
+      realtime
+      aimedArrivalTime
+      aimedDepartureTime
+      expectedArrivalTime
+      expectedDepartureTime
+      actualArrivalTime
+      actualDepartureTime
+      date
+      forBoarding
+      destinationDisplay {
+        frontText
+      }
+      quay {
+        id
+      }
+      serviceJourney {
+        journeyPattern {
+          line {
+            id
+            name
+            transportMode
+          }
+        }
+      }
+    }
+  }
+}
+
+'''
+
+    request = requests.post(
+        "https://api.entur.org/journeyplanner/2.0/index/graphql", json={"query": query}, headers=entur_header)
+
+    return request.json()
