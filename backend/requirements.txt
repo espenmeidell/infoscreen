@@ -15,5 +15,5 @@ PyYAML==3.12
 requests==2.19.1
 six==1.11.0
 typing==3.6.4
-urllib3==1.23
+urllib3==1.26.5
 watchdog==0.8.3
